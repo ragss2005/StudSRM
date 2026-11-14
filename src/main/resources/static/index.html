@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#17243a">
+    <title>StudSRM — Student Directory</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+        <a class="brand" href="/" aria-label="StudSRM home">
+            <span class="brand-mark">S</span>
+            <span class="brand-copy"><strong>StudSRM</strong><small>Student records</small></span>
+        </a>
+        <div class="sidebar-label">WORKSPACE</div>
+        <nav class="side-nav" aria-label="Main navigation">
+            <button class="nav-link active" type="button" data-view="directory" aria-current="page">
+                <span class="nav-icon" aria-hidden="true">▦</span><span>Directory</span>
+            </button>
+            <button class="nav-link" type="button" data-view="attendance">
+                <span class="nav-icon" aria-hidden="true">◷</span><span>Attendance</span>
+            </button>
+            <button class="nav-link" type="button" data-view="marks">
+                <span class="nav-icon" aria-hidden="true">▤</span><span>Marks</span>
+            </button>
+            <button class="nav-link" type="button" data-view="reports">
+                <span class="nav-icon" aria-hidden="true">⇩</span><span>Reports</span>
+            </button>
+            <button class="nav-link" type="button" data-view="smart-query" aria-label="Smart Query">
+                <span class="nav-icon" aria-hidden="true">⌕</span><span>Smart Query</span>
+            </button>
+            <button class="nav-link" id="custom-fields-open" type="button" aria-label="Manage custom fields">
+                <span class="nav-icon" aria-hidden="true">⊞</span><span>Custom fields</span>
+            </button>
+        </nav>
+        <div class="sidebar-bottom">
+            <div class="class-card">
+                <span class="class-card-dot"></span>
+                <div><strong>III CSE</strong><span>Section D</span></div>
+                <span class="class-card-year">2026</span>
+            </div>
+            <p class="privacy-note"><span aria-hidden="true">◈</span> Private, local student records</p>
+        </div>
+    </aside>
+
+    <main class="workspace" id="directory">
+        <header class="topbar">
+            <div class="breadcrumb"><span>Workspace</span><span class="crumb-divider">/</span><strong>Student directory</strong></div>
+            <div class="top-actions">
+                <button class="button button-outline" id="import-open" type="button">
+                    <span aria-hidden="true">↑</span> Import data
+                </button>
+                <input class="visually-hidden" type="file" id="import-file" accept=".xlsx,.xls">
+                <button class="button button-primary" id="add-student" type="button">
+                    <span aria-hidden="true">＋</span> Add student
+                </button>
+            </div>
+        </header>
+
+        <section class="page-heading">
+            <div>
+                <p class="eyebrow">ACADEMIC YEAR 2026–27 <span class="eyebrow-dot"></span> III CSE · SECTION D</p>
+                <h1>Student directory</h1>
+                <p class="heading-subtitle">A clear view of your class, all in one place.</p>
+            </div>
+            <div class="heading-mark" aria-hidden="true"><span>III</span><small>CSE</small></div>
+        </section>
+
+        <section class="summary-grid" aria-label="Class overview">
+            <article class="summary-card">
+                <div class="summary-top"><span class="summary-label">Total students</span><span class="summary-icon icon-blue" aria-hidden="true">♧</span></div>
+                <div class="summary-value" id="total-students">—</div>
+                <div class="summary-foot">In your student directory</div>
+            </article>
+            <article class="summary-card">
+                <div class="summary-top"><span class="summary-label">Hostellers</span><span class="summary-icon icon-purple" aria-hidden="true">⌂</span></div>
+                <div class="summary-value" id="total-hostellers">—</div>
+                <div class="summary-foot">Living in campus housing</div>
+            </article>
+            <article class="summary-card">
+                <div class="summary-top"><span class="summary-label">Scholarship students</span><span class="summary-icon icon-green" aria-hidden="true">✦</span></div>
+                <div class="summary-value" id="total-scholarship">—</div>
+                <div class="summary-foot">With active scholarship status</div>
+            </article>
+            <article class="summary-card">
+                <div class="summary-top"><span class="summary-label">Sections</span><span class="summary-icon icon-amber" aria-hidden="true">▤</span></div>
+                <div class="summary-value" id="total-sections">—</div>
+                <div class="summary-foot">Across your class directory</div>
+            </article>
+        </section>
+
+        <section class="directory-card" aria-labelledby="directory-title">
+            <div class="directory-header">
+                <div>
+                    <div class="title-line"><h2 id="directory-title">All students</h2><span class="count-pill" id="directory-count">0</span></div>
+                    <p class="section-caption">Browse and manage student records</p>
+                </div>
+                <button class="button button-quiet refresh-button" id="refresh" type="button" aria-label="Refresh student directory">
+                    <span aria-hidden="true">↻</span><span class="refresh-text">Refresh</span>
+                </button>
+            </div>
+            <div class="filters" role="search">
+                <label class="search-box">
+                    <span aria-hidden="true">⌕</span>
+                    <input id="search" type="search" placeholder="Search name, register no., admission no. or email" autocomplete="off" aria-label="Search students">
+                    <kbd>/</kbd>
+                </label>
+                <label class="filter-label">
+                    <span class="visually-hidden">Section</span>
+                    <select id="section-filter"><option value="">All sections</option></select>
+                </label>
+                <label class="filter-label">
+                    <span class="visually-hidden">Residence</span>
+                    <select id="residency-filter">
+                        <option value="">All residences</option>
+                        <option value="dayscholar">Day scholars</option>
+                        <option value="hosteller">Hostellers</option>
+                    </select>
+                </label>
+                <label class="filter-label">
+                    <span class="visually-hidden">Scholarship status</span>
+                    <select id="scholarship-filter">
+                        <option value="">All scholarships</option>
+                        <option value="yes">Scholarship</option>
+                        <option value="no">No scholarship</option>
+                    </select>
+                </label>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th scope="col">STUDENT</th>
+                        <th scope="col">REGISTER NUMBER</th>
+                        <th scope="col">CLASS &amp; SECTION</th>
+                        <th scope="col">RESIDENCE</th>
+                        <th scope="col">SCHOLARSHIP</th>
+                        <th scope="col"><span class="visually-hidden">Actions</span></th>
+                    </tr>
+                    </thead>
+                    <tbody id="student-rows">
+                    <tr><td class="table-message" colspan="6"><span class="loader"></span> Loading student directory…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-footer"><span id="table-footer-text">Loading records</span><span class="privacy-inline">Sensitive details are only shown in a profile</span></div>
+        </section>
+        <footer class="page-footer">StudSRM <span>·</span> Student records stay on this device</footer>
+
+        <section class="module-page" id="smart-query-view" hidden>
+            <div class="module-heading"><div><p class="eyebrow">STUDENT INSIGHTS <span class="eyebrow-dot"></span> PRIVATE, LOCAL SEARCH</p>
+                <h1>Smart Query</h1><p class="heading-subtitle">Ask a question in plain language to find relevant student records.</p></div></div>
+            <section class="directory-card smart-query-card">
+                <form id="smart-query-form">
+                    <label class="smart-query-label" for="smart-query-input">What would you like to find?</label>
+                    <div class="smart-query-entry"><textarea id="smart-query-input" rows="2" maxlength="300"
+                        placeholder="Try: “Show students interested in TCS”" required></textarea>
+                        <button class="button button-primary" id="smart-query-submit" type="submit">Search</button></div>
+                </form>
+                <div class="suggestion-block"><span>Try a suggestion</span><div id="smart-query-suggestions" class="query-chips"></div></div>
+            </section>
+            <section class="directory-card module-card smart-query-results" aria-live="polite">
+                <div class="directory-header"><div><div class="title-line"><h2>Query result</h2><span class="count-pill" id="smart-query-count">—</span></div>
+                    <p class="section-caption" id="smart-query-message">Enter a question or choose a suggested query.</p></div>
+                    <div class="smart-export-tools"><select id="smart-query-format" aria-label="Export format"><option value="xlsx">Excel (.xlsx)</option><option value="csv">CSV (.csv)</option><option value="pdf">PDF (.pdf)</option></select>
+                        <button class="button button-outline" id="smart-query-export" type="button" disabled>Export result</button></div>
+                </div>
+                <div class="query-interpretation" id="smart-query-interpretation" hidden></div>
+                <div class="table-wrap"><table><thead id="smart-query-head"><tr><th>RESULTS</th></tr></thead>
+                    <tbody id="smart-query-rows"><tr><td class="table-message">Your results will appear here.</td></tr></tbody></table></div>
+                <div class="table-footer"><span id="smart-query-footer">Queries only use recognized filters and parameterized local database searches.</span><span class="privacy-inline">Private identifiers and family details are excluded.</span></div>
+            </section>
+            <section class="directory-card module-card certificate-manager">
+                <div class="directory-header"><div><h2 class="panel-title">Certificate catalog</h2><p class="section-caption">Manage certificates available in student profiles.</p></div>
+                    <span class="count-pill" id="certificate-catalog-count">0</span></div>
+                <div class="certificate-create">
+                    <label class="field-control"><span>Certificate name</span><input id="certificate-name" maxlength="200" placeholder="e.g. Globalization Certificate" required></label>
+                    <label class="field-control"><span>Issuing organization</span><input id="certificate-organization" maxlength="200" placeholder="Optional"></label>
+                    <label class="field-control"><span>Description</span><input id="certificate-description" maxlength="1000" placeholder="Optional"></label>
+                    <button class="button button-primary" id="certificate-create" type="button">Add certificate</button>
+                </div>
+                <div class="custom-field-list" id="certificate-catalog"><div class="loading-panel"><span class="loader"></span> Loading certificates…</div></div>
+            </section>
+        </section>
+
+        <section class="module-page" id="attendance-view" hidden>
+            <div class="module-heading">
+                <div><p class="eyebrow">CLASS TRACKING <span class="eyebrow-dot"></span> III CSE</p><h1>Attendance</h1>
+                    <p class="heading-subtitle">Record a class session and keep an eye on attendance health.</p></div>
+                <button class="button button-primary" id="attendance-create" type="button"><span aria-hidden="true">＋</span> Take attendance</button>
+            </div>
+            <div class="summary-grid module-summary">
+                <article class="summary-card"><div class="summary-top"><span class="summary-label">Today's sessions</span><span class="summary-icon icon-blue">◷</span></div><div class="summary-value" id="attendance-today">0</div><div class="summary-foot">Sessions recorded today</div></article>
+                <article class="summary-card"><div class="summary-top"><span class="summary-label">Class attendance</span><span class="summary-icon icon-green">✓</span></div><div class="summary-value" id="attendance-average">0%</div><div class="summary-foot">Present, late and on duty</div></article>
+                <article class="summary-card"><div class="summary-top"><span class="summary-label">Below 75%</span><span class="summary-icon icon-amber">!</span></div><div class="summary-value" id="attendance-shortage">0</div><div class="summary-foot">Students needing support</div></article>
+                <article class="summary-card"><div class="summary-top"><span class="summary-label">Students tracked</span><span class="summary-icon icon-purple">♧</span></div><div class="summary-value" id="attendance-students">0</div><div class="summary-foot">With attendance records</div></article>
+            </div>
+            <section class="directory-card module-card">
+                <div class="directory-header"><div><div class="title-line"><h2>Attendance history</h2><span class="count-pill" id="attendance-count">0</span></div><p class="section-caption">Filter sessions, review status totals or update a saved session.</p></div>
+                    <button class="button button-quiet" id="attendance-refresh" type="button">↻ Refresh</button></div>
+                <div class="filters module-filters">
+                    <label class="filter-label"><span class="visually-hidden">From date</span><input id="attendance-from" type="date" aria-label="Attendance from date"></label>
+                    <label class="filter-label"><span class="visually-hidden">To date</span><input id="attendance-to" type="date" aria-label="Attendance to date"></label>
+                    <label class="filter-label"><span class="visually-hidden">Section</span><select id="attendance-section"><option value="">All sections</option></select></label>
+                    <label class="filter-label"><span class="visually-hidden">Subject</span><input id="attendance-subject-filter" type="search" placeholder="Subject"></label>
+                    <label class="filter-label"><span class="visually-hidden">Student</span><select id="attendance-student-filter"><option value="">All students</option></select></label>
+                    <label class="filter-label"><span class="visually-hidden">Status</span><select id="attendance-status-filter"><option value="">All statuses</option><option>Present</option><option>Absent</option><option>Late</option><option>On Duty</option><option>Leave</option></select></label>
+                    <button class="button button-outline" id="attendance-filter-apply" type="button">Apply filters</button>
+                </div>
+                <div class="table-wrap"><table><thead><tr><th>DATE</th><th>SUBJECT</th><th>PERIOD</th><th>SECTION</th><th>FACULTY</th><th>ATTENDED</th><th>RATE</th><th>ACTIONS</th></tr></thead>
+                    <tbody id="attendance-rows"><tr><td class="table-message" colspan="8"><span class="loader"></span> Loading sessions…</td></tr></tbody></table></div>
+                <div class="table-footer"><span id="attendance-footer">Loading sessions</span><span class="privacy-inline">Late and On Duty count as attended; Leave does not.</span></div>
+            </section>
+            <div class="module-columns">
+                <section class="directory-card module-card"><div class="directory-header"><div><h2 class="panel-title">Highest attendance</h2><p class="section-caption">Students with the strongest attendance</p></div></div><div class="compact-list" id="attendance-highest"></div></section>
+                <section class="directory-card module-card"><div class="directory-header"><div><h2 class="panel-title">Attendance shortage</h2><p class="section-caption">Below the 75% attendance threshold</p></div></div><div class="compact-list" id="attendance-lowest"></div></section>
+            </div>
+        </section>
+
+        <section class="module-page" id="marks-view" hidden>
+            <div class="module-heading"><div><p class="eyebrow">ACADEMIC PERFORMANCE <span class="eyebrow-dot"></span> III CSE</p><h1>Marks</h1><p class="heading-subtitle">Manage subjects, assessments and section marks.</p></div>
+                <button class="button button-primary" id="marks-load-roster" type="button">Load marks roster</button></div>
+            <div class="summary-grid module-summary">
+                <article class="summary-card"><div class="summary-top"><span class="summary-label">Class average</span><span class="summary-icon icon-blue">◒</span></div><div class="summary-value" id="marks-average">0%</div><div class="summary-foot">Across recorded assessments</div></article>
+                <article class="summary-card"><div class="summary-top"><span class="summary-label">Highest performance</span><span class="summary-icon icon-green">↗</span></div><div class="summary-value" id="marks-highest">0%</div><div class="summary-foot">Top section average</div></article>
+                <article class="summary-card"><div class="summary-top"><span class="summary-label">Lowest performance</span><span class="summary-icon icon-amber">↘</span></div><div class="summary-value" id="marks-lowest">0%</div><div class="summary-foot">Recorded section average</div></article>
+                <article class="summary-card"><div class="summary-top"><span class="summary-label">Need support</span><span class="summary-icon icon-purple">!</span></div><div class="summary-value" id="marks-support">0</div><div class="summary-foot">Below 50% overall</div></article>
+            </div>
+            <div class="module-columns management-columns">
+                <section class="directory-card module-card"><div class="directory-header"><div><h2 class="panel-title">Subjects</h2><p class="section-caption">Create a subject for a section and semester</p></div></div>
+                    <form id="subject-form" class="inline-form">
+                        <input name="subjectCode" placeholder="Code" maxlength="60" required aria-label="Subject code">
+                        <input name="subjectName" placeholder="Subject name" maxlength="200" required aria-label="Subject name">
+                        <input name="semester" placeholder="Semester" maxlength="50" required aria-label="Semester">
+                        <input name="academicYear" placeholder="Academic year" value="2026-27" required aria-label="Academic year">
+                        <select name="section" class="academic-section" required aria-label="Section"><option value="">Section</option></select>
+                        <input name="maxInternalMarks" type="number" min="0" step="0.01" value="40" required aria-label="Maximum internal marks">
+                        <input name="maxExternalMarks" type="number" min="0" step="0.01" value="60" required aria-label="Maximum external marks">
+                        <input name="maxTotalMarks" type="number" min="0.01" step="0.01" value="100" required aria-label="Maximum total marks">
+                        <button class="button button-primary" type="submit">Add subject</button>
+                    </form>
+                    <div class="compact-list" id="subject-list"></div>
+                </section>
+                <section class="directory-card module-card"><div class="directory-header"><div><h2 class="panel-title">Assessments</h2><p class="section-caption">Set up an assessment before entering marks</p></div></div>
+                    <form id="assessment-form" class="inline-form">
+                        <select name="subjectId" id="assessment-subject" required aria-label="Assessment subject"><option value="">Choose subject</option></select>
+                        <input name="assessmentName" placeholder="Assessment name" maxlength="200" required aria-label="Assessment name">
+                        <select name="assessmentType" id="assessment-type" required aria-label="Assessment type"></select>
+                        <input name="assessmentDate" type="date" aria-label="Assessment date">
+                        <input name="maxMarks" type="number" min="0.01" step="0.01" placeholder="Max marks" required aria-label="Maximum marks">
+                        <input name="weightage" type="number" min="0" step="0.01" value="100" aria-label="Weightage">
+                        <button class="button button-primary" type="submit">Add assessment</button>
+                    </form>
+                    <div class="compact-list" id="assessment-list"></div>
+                </section>
+            </div>
+            <section class="directory-card module-card">
+                <div class="directory-header"><div><div class="title-line"><h2>Marks register</h2><span class="count-pill" id="marks-count">0</span></div><p class="section-caption">Unentered marks remain clearly marked as missing.</p></div>
+                    <button class="button button-outline" id="marks-save" type="button" disabled>Save marks</button></div>
+                <div class="filters module-filters marks-filters">
+                    <label class="filter-label"><span class="visually-hidden">Academic year</span><input id="marks-year" placeholder="Academic year" value="2026-27" aria-label="Filter by academic year"></label>
+                    <label class="filter-label"><span class="visually-hidden">Semester</span><input id="marks-semester" placeholder="Semester" aria-label="Filter by semester"></label>
+                    <label class="filter-label"><span class="visually-hidden">Section</span><select id="marks-section"><option value="">All sections</option></select></label>
+                    <label class="filter-label"><span class="visually-hidden">Subject</span><select id="marks-subject"><option value="">All subjects</option></select></label>
+                    <label class="filter-label"><span class="visually-hidden">Assessment</span><select id="marks-assessment"><option value="">All assessments</option></select></label>
+                    <label class="filter-label"><span class="visually-hidden">Student</span><select id="marks-student"><option value="">All students</option></select></label>
+                    <button class="button button-outline" id="marks-filter-apply" type="button">Apply filters</button>
+                </div>
+                <div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>SUBJECT</th><th>ASSESSMENT</th><th>MARKS</th><th>MAX</th><th>GRADE</th><th>RANK</th><th>STATUS</th></tr></thead>
+                    <tbody id="marks-rows"><tr><td class="table-message" colspan="8">Choose an assessment to load marks.</td></tr></tbody></table></div>
+                <div class="marks-entry" id="marks-entry" hidden><div class="marks-entry-heading"><div><h3>Enter marks</h3><p class="section-caption" id="marks-entry-caption"></p></div><span class="action-spacer"></span><button class="button button-outline" id="marks-entry-cancel" type="button">Cancel</button><button class="button button-primary" id="marks-entry-save" type="button">Save roster</button></div>
+                    <div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>REGISTER NUMBER</th><th>MARKS OBTAINED</th><th>REMARKS</th></tr></thead><tbody id="marks-roster"></tbody></table></div></div>
+            </section>
+            <div class="module-columns">
+                <section class="directory-card module-card"><div class="directory-header"><div><h2 class="panel-title">Subject performance</h2><p class="section-caption">Average percentage by subject</p></div></div><div class="compact-list" id="marks-subject-performance"></div></section>
+                <section class="directory-card module-card"><div class="directory-header"><div><h2 class="panel-title">Recent assessments</h2><p class="section-caption">Latest assessment activity</p></div></div><div class="compact-list" id="marks-recent"></div></section>
+            </div>
+        </section>
+
+        <section class="module-page" id="reports-view" hidden>
+            <div class="module-heading"><div><p class="eyebrow">SECURE DATA EXPORT <span class="eyebrow-dot"></span> FILTERED REPORTS</p><h1>Reports</h1><p class="heading-subtitle">Preview your filtered report before exporting.</p></div></div>
+            <section class="directory-card module-card report-builder">
+                <div class="directory-header"><div><h2 class="panel-title">Build a report</h2><p class="section-caption">Choose a report and refine the records included.</p></div></div>
+                <form id="report-form" class="report-form">
+                    <label class="field-control"><span>Report category</span><select name="category" id="report-category"><option value="students">Students</option><option value="attendance">Attendance</option><option value="marks">Marks</option></select></label>
+                    <label class="field-control"><span>Report type</span><select name="type" id="report-type"></select></label>
+                    <label class="field-control report-date-filter"><span>From date</span><input name="startDate" type="date"></label>
+                    <label class="field-control report-date-filter"><span>To date</span><input name="endDate" type="date"></label>
+                    <label class="field-control report-academic-filter"><span>Academic year</span><input name="academicYear" placeholder="e.g. 2026-27"></label>
+                    <label class="field-control report-academic-filter"><span>Semester</span><input name="semester" placeholder="e.g. 6"></label>
+                    <label class="field-control"><span>Section</span><select name="section" class="academic-section"><option value="">All sections</option></select></label>
+                    <label class="field-control"><span>Subject</span><select name="subjectId" id="report-subject"><option value="">All subjects</option></select></label>
+                    <label class="field-control"><span>Student</span><select name="studentId" class="student-options"><option value="">All students</option></select></label>
+                    <label class="field-control"><span>Export format</span><select name="format" id="report-format"><option value="xlsx">Excel (.xlsx)</option><option value="csv">CSV (.csv)</option><option value="pdf">PDF (.pdf)</option></select></label>
+                    <label class="sensitive-choice"><input type="checkbox" id="report-sensitive"><span><strong>Include sensitive fields</strong><small>Includes private identifiers, family contacts, income and address. A separate confirmation is required to download.</small></span></label>
+                    <div class="report-actions"><button class="button button-outline" id="report-preview" type="button">Preview report</button><button class="button button-primary" id="report-download" type="button" disabled>Download report</button></div>
+                </form>
+            </section>
+            <section class="directory-card module-card report-preview">
+                <div class="directory-header"><div><div class="title-line"><h2 id="report-preview-title">Report preview</h2><span class="count-pill" id="report-record-count">0</span></div><p class="section-caption" id="report-preview-meta">Select a report and choose Preview Report.</p></div></div>
+                <div class="table-wrap"><table><thead id="report-head"><tr><th>PREVIEW</th></tr></thead><tbody id="report-rows"><tr><td class="table-message">Your preview will appear here.</td></tr></tbody></table></div>
+            </section>
+        </section>
+    </main>
+</div>
+
+<div class="dialog-backdrop" id="profile-dialog" hidden>
+    <section class="dialog-panel profile-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title" tabindex="-1">
+        <header class="dialog-header profile-header">
+            <div>
+                <p class="eyebrow dialog-eyebrow" id="profile-mode">STUDENT PROFILE</p>
+                <h2 id="profile-title">Student details</h2>
+                <p class="dialog-subtitle" id="profile-subtitle">Keep this student's information up to date.</p>
+            </div>
+            <button class="icon-button dialog-close" type="button" data-close="profile-dialog" aria-label="Close profile">×</button>
+        </header>
+        <form id="student-form">
+            <div class="profile-tabs" role="tablist" aria-label="Student profile sections">
+                <button class="profile-tab active" id="profile-tab-details" type="button" role="tab" aria-selected="true" data-profile-tab="details">Student details</button>
+                <button class="profile-tab" id="profile-tab-performance" type="button" role="tab" aria-selected="false" data-profile-tab="performance">Academic performance</button>
+                <button class="profile-tab" id="profile-tab-certificates" type="button" role="tab" aria-selected="false" data-profile-tab="certificates" disabled>Certificates</button>
+            </div>
+            <div class="profile-content" id="profile-content">
+                <div class="loading-panel"><span class="loader"></span> Preparing student profile…</div>
+            </div>
+            <div class="profile-content performance-content" id="profile-performance" hidden><div class="loading-panel"><span class="loader"></span> Loading academic performance…</div></div>
+            <div class="profile-content performance-content" id="profile-certificates" hidden>
+                <section class="field-group"><h3>Certificate status</h3><p class="section-caption">Record a student's certificate progress or completion.</p>
+                    <div class="certificate-student-entry">
+                        <label class="field-control"><span>Certificate</span><select id="student-certificate-select"><option value="">Choose certificate</option></select></label>
+                        <label class="field-control"><span>Status</span><select id="student-certificate-status"><option>Completed</option><option>In Progress</option><option>Not Started</option><option>Not Applicable</option></select></label>
+                        <label class="field-control"><span>Completion date</span><input id="student-certificate-date" type="date"></label>
+                        <label class="field-control"><span>Certificate number</span><input id="student-certificate-number" maxlength="200"></label>
+                        <label class="field-control certificate-remarks"><span>Remarks</span><input id="student-certificate-remarks" maxlength="1000"></label>
+                        <button class="button button-primary" id="student-certificate-save" type="button">Save status</button>
+                    </div>
+                    <div class="table-wrap"><table><thead><tr><th>CERTIFICATE</th><th>STATUS</th><th>COMPLETION DATE</th><th>CERTIFICATE NUMBER</th><th>REMARKS</th><th>ACTIONS</th></tr></thead>
+                        <tbody id="student-certificates-rows"><tr><td colspan="6" class="table-message">Choose a student profile to view certificate status.</td></tr></tbody></table></div>
+                </section>
+            </div>
+            <div class="dialog-actions profile-actions">
+                <button class="button button-danger-quiet" id="delete-student" type="button" hidden>Delete student</button>
+                <span class="action-spacer"></span>
+                <button class="button button-outline" type="button" data-close="profile-dialog">Cancel</button>
+                <button class="button button-primary" id="save-student" type="submit">Save student</button>
+            </div>
+
+        </form>
+    </section>
+</div>
+
+<div class="dialog-backdrop" id="attendance-dialog" hidden>
+    <section class="dialog-panel attendance-panel" role="dialog" aria-modal="true" aria-labelledby="attendance-dialog-title" tabindex="-1">
+        <header class="dialog-header"><div><p class="eyebrow dialog-eyebrow">ATTENDANCE SESSION</p><h2 id="attendance-dialog-title">Take attendance</h2><p class="dialog-subtitle">Everyone starts as Present. Update status or add a remark as needed.</p></div><button class="icon-button" type="button" data-close="attendance-dialog" aria-label="Close attendance form">×</button></header>
+        <form id="attendance-form">
+            <div class="dialog-form-grid">
+                <label class="field-control"><span>Date</span><input name="attendanceDate" type="date" required></label>
+                <label class="field-control"><span>Subject</span><input name="subjectName" maxlength="200" required placeholder="e.g. Data Structures"></label>
+                <label class="field-control"><span>Hour / period</span><input name="hourOrPeriod" maxlength="100" required placeholder="e.g. Period 2"></label>
+                <label class="field-control"><span>Faculty name</span><input name="facultyName" maxlength="200" placeholder="Optional"></label>
+                <label class="field-control"><span>Section</span><select name="section" class="academic-section" required><option value="">Choose section</option></select></label>
+                <button class="button button-outline roster-load-button" id="attendance-load-roster" type="button">Load students</button>
+            </div>
+            <div class="attendance-roster" id="attendance-roster" hidden><div class="roster-toolbar"><span id="attendance-roster-count">0 students</span><label>Set everyone <select id="attendance-set-all"><option>Present</option><option>Absent</option><option>Late</option><option>On Duty</option><option>Leave</option></select></label></div>
+                <div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>REGISTER NUMBER</th><th>STATUS</th><th>REMARK</th></tr></thead><tbody id="attendance-roster-rows"></tbody></table></div></div>
+            <div class="dialog-actions"><span class="action-spacer"></span><button class="button button-outline" type="button" data-close="attendance-dialog">Cancel</button><button class="button button-primary" id="attendance-save" type="submit">Save attendance</button></div>
+        </form>
+    </section>
+</div>
+
+<div class="dialog-backdrop" id="fields-dialog" hidden>
+    <section class="dialog-panel fields-panel" role="dialog" aria-modal="true" aria-labelledby="fields-title" tabindex="-1">
+        <header class="dialog-header">
+            <div><p class="eyebrow dialog-eyebrow">FLEXIBLE RECORDS</p><h2 id="fields-title">Custom fields</h2>
+                <p class="dialog-subtitle">Add class-specific details to every student profile.</p></div>
+            <button class="icon-button dialog-close" type="button" data-close="fields-dialog" aria-label="Close custom fields">×</button>
+        </header>
+        <div class="fields-content">
+            <form id="field-form" class="new-field-form">
+                <label class="field-control"><span>Field label</span><input name="label" maxlength="200" placeholder="e.g. Internship Status" required></label>
+                <label class="field-control"><span>Field type</span>
+                    <select name="type"><option value="text">Text</option><option value="number">Number</option><option value="date">Date</option><option value="option">Short option</option></select>
+                </label>
+                <button class="button button-primary" type="submit">Add field</button>
+            </form>
+            <div class="field-list-heading"><h3>Existing fields</h3><span id="field-count" class="count-pill">0</span></div>
+            <div class="custom-field-list" id="custom-field-list"><div class="loading-panel"><span class="loader"></span> Loading fields…</div></div>
+        </div>
+        <div class="dialog-actions"><span class="action-spacer"></span><button class="button button-outline" type="button" data-close="fields-dialog">Done</button></div>
+    </section>
+</div>
+
+<div class="toast-region" id="toast-region" role="status" aria-live="polite" aria-atomic="true"></div>
+<script src="/app.js" defer></script>
+</body>
+</html>

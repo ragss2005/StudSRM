@@ -1,0 +1,7 @@
+/target/
+/data/*.mv.db
+/data/*.trace.db
+/data/*.lock.db
+/src/main/resources/seed/students.json
+/.vscode/settings.json
+*.log
